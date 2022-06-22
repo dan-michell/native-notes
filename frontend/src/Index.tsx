@@ -27,11 +27,18 @@ const Index = () => {
       initialRouteName="Main"
       drawerContent={(props) => <Sidebar {...props} />}
       screenOptions={{
+        title: "Notes",
+        headerTitleStyle: {
+          color: "white",
+        },
         headerShown: false,
         drawerType: "back",
         overlayColor: "#00000000",
         drawerPosition: "left",
         swipeEdgeWidth: 200,
+        headerStyle: {
+          backgroundColor: "rgb(32,32,32)",
+        },
       }}
     >
       <Drawer.Screen name="Main" component={Main} />
