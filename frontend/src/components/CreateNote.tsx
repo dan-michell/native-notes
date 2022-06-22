@@ -5,9 +5,16 @@ import { Keyboard, TouchableWithoutFeedback } from "react-native";
 type Props = {
   open: boolean;
   handleOpenNoteCreation: (state: boolean) => void;
+  createNote: (note: string, createdAt: string) => void;
 };
 
-const CreateNote = ({ open, handleOpenNoteCreation }: Props): JSX.Element => {
+const CreateNote = ({ open, handleOpenNoteCreation, createNote }: Props): JSX.Element => {
+  const [noteContent, setNoteContent] = useState("");
+
+  const getCurrentDate = (): string => {
+    return new Date().toLocaleString();
+  };
+
   return (
     <Modal isOpen={open} onClose={() => handleOpenNoteCreation(false)} safeAreaTop={true}>
       <TouchableWithoutFeedback
@@ -26,6 +33,7 @@ const CreateNote = ({ open, handleOpenNoteCreation }: Props): JSX.Element => {
             <Modal.Body>
               <TextArea
                 placeholder="Type here..."
+                value={noteContent}
                 mb={3}
                 fontSize={18}
                 h={200}
@@ -33,8 +41,18 @@ const CreateNote = ({ open, handleOpenNoteCreation }: Props): JSX.Element => {
                 color={"gray.200"}
                 autoCompleteType={true}
                 selectionColor={"gray.300"}
+                onChangeText={setNoteContent}
               />
-              <Button w={"30%"} alignSelf="flex-end" borderRadius={"100%"}>
+              <Button
+                w={"30%"}
+                alignSelf="flex-end"
+                borderRadius={"100%"}
+                onPress={() => {
+                  createNote(noteContent, getCurrentDate());
+                  setNoteContent("");
+                  handleOpenNoteCreation(false);
+                }}
+              >
                 <Text fontSize={17} color={"gray.200"}>
                   Save
                 </Text>
