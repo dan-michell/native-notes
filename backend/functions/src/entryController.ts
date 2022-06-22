@@ -4,21 +4,24 @@ import { db } from "./config/firebase";
 
 type EntryType = {
   note: string;
+  userId: string;
   createdAt: string;
 };
 
 type Request = {
   body: EntryType;
-  params: { noteId: string };
+  params: { noteId: string; userId: string };
 };
 
 const addNote = async (req: Request, res: Response) => {
+  const { userId } = req.params;
   const { note, createdAt } = req.body;
   try {
     const noteEntry = db.collection("notes").doc();
     const entryObject = {
       id: noteEntry.id,
       note,
+      userId,
       createdAt,
     };
 
@@ -35,9 +38,12 @@ const addNote = async (req: Request, res: Response) => {
 };
 
 const getNotes = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
   try {
     const notes: EntryType[] = [];
-    const querySnapshot = await db.collection("notes").get();
+    // eslint-disable-next-line max-len
+    const querySnapshot = await db.collection("notes").where("userId", "==", `${userId}`).get();
     querySnapshot.forEach((doc: any) => notes.push(doc.data()));
     res.status(200).json(notes);
   } catch (error) {
@@ -57,6 +63,7 @@ const updateNote = async (req: Request, res: Response) => {
     const noteObject = {
       id: currentData.id,
       note: note || currentData.note,
+      userId: currentData.userId,
       createdAt: currentData.createdAt,
     };
 

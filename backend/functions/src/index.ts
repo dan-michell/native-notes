@@ -6,8 +6,8 @@ import { addNote, getNotes, updateNote, deleteNote } from "./entryController";
 const app = express();
 
 app.get("/", (req, res) => res.status(200).send("Hello There."));
-app.get("/api/notes", getNotes);
-app.post("/api/notes", addNote);
+app.get("/api/notes/:userId", getNotes);
+app.post("/api/notes/:userId", addNote);
 app.patch("/api/notes/:noteId", updateNote);
 app.delete("/api/notes/:noteId", deleteNote);
 
