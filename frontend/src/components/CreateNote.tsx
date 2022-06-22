@@ -8,8 +8,6 @@ type Props = {
 };
 
 const CreateNote = ({ open, handleOpenNoteCreation }: Props): JSX.Element => {
-  const [textAreaValue, setTextAreaValue] = useState("Type a note...");
-
   return (
     <Modal isOpen={open} onClose={() => handleOpenNoteCreation(false)} safeAreaTop={true}>
       <TouchableWithoutFeedback
