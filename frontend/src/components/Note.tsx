@@ -2,10 +2,11 @@ import React from "react";
 import { Checkbox, Box, Text } from "native-base";
 
 type Props = {
-  item: unknown;
+  content: any;
+  date: any;
 };
 
-const Note = ({ item }: Props): JSX.Element => {
+const Note = ({ content, date }: Props): JSX.Element => {
   const convertDateToReadableString = (date: number): string => {
     const createdAt = new Date(date);
     const readableCreatedAt = createdAt.toLocaleString();
@@ -25,10 +26,10 @@ const Note = ({ item }: Props): JSX.Element => {
     >
       <Box w={"80%"}>
         <Text color={"gray.200"} fontSize={16}>
-          {item.content}
+          {content}
         </Text>
         <Text fontSize={14} italic color={"gray.400"}>
-          Created: {convertDateToReadableString(item.date)}
+          Created: {convertDateToReadableString(date)}
         </Text>
       </Box>
       <Box w={"20%"} alignItems={"center"}>

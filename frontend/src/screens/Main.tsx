@@ -32,9 +32,8 @@ const Main = ({ navigation }: any) => {
     setNotes(notes);
   };
 
-  const createNote = async (note: string, createdAt: string): Promise<any> => {
-    const noteCreationResponseMessage = await networking.createNote(note, createdAt, userId);
-    console.log(noteCreationResponseMessage);
+  const createNote = async (note: string, createdAt: number): Promise<any> => {
+    await networking.createNote(note, createdAt, userId);
     getNotes();
   };
 
@@ -42,7 +41,6 @@ const Main = ({ navigation }: any) => {
     if (notes != null) {
       const noteData = notes.map((note, i) => {
         return { key: i, content: note.note, date: note.createdAt };
-        // return <Note key={i} content={note.note} date={note.createdAt} />;
       });
       setNoteInfo(noteData);
     }
@@ -79,7 +77,8 @@ const Main = ({ navigation }: any) => {
         <Divider mt={2} bg={"gray.600"} shadow={8} w={"90%"} alignSelf={"center"} />
         <SwipeListView
           data={noteInfo}
-          renderItem={(data, rowMap) => <Note item={data.item} />}
+          disableRightSwipe={true}
+          renderItem={(data: any, rowMap) => <Note content={data.item.content} date={data.item.date} />}
           renderHiddenItem={(data, rowMap) => (
             <View>
               <Text>Left</Text>
