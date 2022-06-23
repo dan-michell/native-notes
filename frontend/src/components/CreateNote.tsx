@@ -5,14 +5,14 @@ import { Keyboard, TouchableWithoutFeedback } from "react-native";
 type Props = {
   open: boolean;
   handleOpenNoteCreation: (state: boolean) => void;
-  createNote: (note: string, createdAt: string) => void;
+  createNote: (note: string, createdAt: number) => void;
 };
 
 const CreateNote = ({ open, handleOpenNoteCreation, createNote }: Props): JSX.Element => {
   const [noteContent, setNoteContent] = useState("");
 
-  const getCurrentDate = (): string => {
-    return new Date().toLocaleString();
+  const getCurrentDate = (): number => {
+    return new Date().getTime();
   };
 
   return (

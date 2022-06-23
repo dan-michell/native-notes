@@ -7,6 +7,12 @@ type Props = {
 };
 
 const Note = ({ content, date }: Props): JSX.Element => {
+  const convertDateToReadableString = (date: number): string => {
+    const createdAt = new Date(date);
+    const readableCreatedAt = createdAt.toLocaleString();
+    return readableCreatedAt;
+  };
+
   return (
     <Box
       bg={"rgba(52,52,52, 0.9)"}
@@ -23,7 +29,7 @@ const Note = ({ content, date }: Props): JSX.Element => {
           {content}
         </Text>
         <Text fontSize={14} italic color={"gray.400"}>
-          Created: {date}
+          Created: {convertDateToReadableString(date)}
         </Text>
       </Box>
       <Box w={"20%"} alignItems={"center"}>
