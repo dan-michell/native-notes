@@ -7,15 +7,18 @@ import { Ionicons } from "@expo/vector-icons";
 import { Networking } from "../../networking";
 import { auth } from "../../firebase/firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
+import { SwipeListView } from "react-native-swipe-list-view";
 
 const Main = ({ navigation }: any) => {
   const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState<any[]>([]);
   const [userId, setUserId] = useState("");
+  const [noteInfo, setNoteInfo] = useState<any>([]);
   const networking = new Networking();
 
   useEffect(() => {
     getNotes();
+    populateNotes();
   }, [userId]);
 
   onAuthStateChanged(auth, (user) => {
@@ -37,9 +40,11 @@ const Main = ({ navigation }: any) => {
 
   const populateNotes = () => {
     if (notes != null) {
-      return notes.map((note, i) => {
-        return <Note key={i} content={note.note} date={note.createdAt} />;
+      const noteData = notes.map((note, i) => {
+        return { key: i, content: note.note, date: note.createdAt };
+        // return <Note key={i} content={note.note} date={note.createdAt} />;
       });
+      setNoteInfo(noteData);
     }
   };
 
@@ -72,7 +77,18 @@ const Main = ({ navigation }: any) => {
           />
         </View>
         <Divider mt={2} bg={"gray.600"} shadow={8} w={"90%"} alignSelf={"center"} />
-        <ScrollView>{populateNotes()}</ScrollView>
+        <SwipeListView
+          data={noteInfo}
+          renderItem={(data, rowMap) => <Note item={data.item} />}
+          renderHiddenItem={(data, rowMap) => (
+            <View>
+              <Text>Left</Text>
+              <Text>Right</Text>
+            </View>
+          )}
+          leftOpenValue={75}
+          rightOpenValue={-75}
+        />
       </Box>
       <Fab
         onPress={() => setOpen(true)}
