@@ -64,7 +64,7 @@ const Main = ({ navigation }: any) => {
           />
         </View>
         <Divider mt={2} bg={"gray.600"} shadow={8} w={"90%"} alignSelf={"center"} />
-        <NoteList notes={notes} />
+        <NoteList notes={notes} getNotes={getNotes} />
       </Box>
       <Fab
         onPress={() => setOpen(true)}

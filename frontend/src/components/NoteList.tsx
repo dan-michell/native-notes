@@ -4,14 +4,16 @@ import { View, Box, Text, Checkbox, Pressable, Icon } from "native-base";
 import React, { useState, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Networking } from "../../networking";
 
 type Props = {
   notes: any[];
+  getNotes: () => Promise<any>;
 };
 
-const NoteList = ({ notes }: Props) => {
-  // Bug occurs because height of swipe element does not update to new height of note, therefore appearing below the single line note that moves into the area.
+const NoteList = ({ notes, getNotes }: Props) => {
   const [noteInfo, setNoteInfo] = useState<any>([]);
+  const networking = new Networking();
 
   useEffect(() => {
     populateNotes();
@@ -20,10 +22,15 @@ const NoteList = ({ notes }: Props) => {
   const populateNotes = () => {
     if (notes != null) {
       const noteData = notes.map((note, i) => {
-        return { key: i, content: note.note, date: note.createdAt };
+        return { key: i, content: note.note, date: note.createdAt, id: note.id };
       });
       setNoteInfo(noteData);
     }
+  };
+
+  const deleteNote = async (noteId: string) => {
+    await networking.deleteNote(noteId);
+    getNotes();
   };
 
   const convertDateToReadableString = (date: number): string => {
@@ -32,14 +39,10 @@ const NoteList = ({ notes }: Props) => {
     return readableCreatedAt;
   };
 
-  const openRow = (rowMap, rowKey) => {
+  const closeRow = (rowMap, rowKey) => {
     if (rowMap[rowKey]) {
-      rowMap[rowKey].openRow();
+      rowMap[rowKey].closeRow();
     }
-  };
-
-  const deleteRow = (rowMap, rowKey) => {
-    // Networking
   };
 
   const renderItem = (data: any, rowMap: any) => (
@@ -53,7 +56,7 @@ const NoteList = ({ notes }: Props) => {
       alignSelf={"center"}
       p={3}
     >
-      <Box w={"80%"}>
+      <Box w={"85%"}>
         <Text color={"gray.200"} fontSize={16}>
           {data.item.content}
         </Text>
@@ -61,16 +64,8 @@ const NoteList = ({ notes }: Props) => {
           Created: {convertDateToReadableString(data.item.date)}
         </Text>
       </Box>
-      <Box w={"20%"} alignItems={"center"}>
-        <Icon
-          color="gray.400"
-          as={MaterialCommunityIcons}
-          name="dots-horizontal"
-          size="xl"
-          onPress={() => {
-            openRow(rowMap, data.item.key);
-          }}
-        />
+      <Box w={"15%"} alignItems={"center"}>
+        <Icon color="gray.400" as={MaterialCommunityIcons} name="dots-horizontal" size="xl" />
       </Box>
     </Box>
   );
@@ -102,7 +97,10 @@ const NoteList = ({ notes }: Props) => {
         alignItems={"center"}
         justifyContent={"center"}
         roundedRight={"2xl"}
-        onPress={() => deleteRow(rowMap, data.item.key)}
+        onPress={() => {
+          deleteNote(data.item.id);
+          closeRow(rowMap, data.item.key);
+        }}
       >
         <Icon color="gray.300" as={AntDesign} name="delete" size="lg" />
       </Pressable>

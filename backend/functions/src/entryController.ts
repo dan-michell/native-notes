@@ -95,17 +95,16 @@ const deleteNote = async (req: Request, res: Response) => {
   const { noteId } = req.params;
 
   try {
-    const noteEntry = db.collection("entries").doc(noteId);
-
-    try {
-      await noteEntry.delete();
-    } catch (error) {
-      return res.status(400).json({
-        status: "error",
-        message: error.message,
+    await db
+      .collection("notes")
+      .doc(noteId)
+      .delete()
+      .catch((error) => {
+        return res.status(400).json({
+          status: "error",
+          message: error.message,
+        });
       });
-    }
-
     return res.status(200).json({
       status: "success",
       message: "entry deleted successfully",
