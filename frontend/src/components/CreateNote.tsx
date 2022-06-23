@@ -37,11 +37,16 @@ const CreateNote = ({ open, handleOpenNoteCreation, createNote }: Props): JSX.El
                 mb={3}
                 fontSize={18}
                 h={200}
+                borderWidth={"1"}
                 borderColor={"gray.700"}
                 color={"gray.200"}
                 autoCompleteType={true}
                 selectionColor={"gray.300"}
                 onChangeText={setNoteContent}
+                _focus={{
+                  bg: "gray.800",
+                  borderColor: "primary.600",
+                }}
               />
               <Button
                 w={"30%"}

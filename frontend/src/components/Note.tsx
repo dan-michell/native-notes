@@ -2,8 +2,8 @@ import React from "react";
 import { Checkbox, Box, Text } from "native-base";
 
 type Props = {
-  content: string;
-  date: string;
+  content: any;
+  date: any;
 };
 
 const Note = ({ content, date }: Props): JSX.Element => {

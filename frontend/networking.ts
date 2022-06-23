@@ -12,7 +12,7 @@ export class Networking {
     }
   }
 
-  async createNote(note: string, createdAt: string, userId: string) {
+  async createNote(note: string, createdAt: number, userId: string) {
     const noteData = { note, createdAt };
     try {
       const response = await fetch(

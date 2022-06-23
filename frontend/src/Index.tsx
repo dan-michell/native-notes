@@ -35,7 +35,7 @@ const Index = () => {
         drawerType: "back",
         overlayColor: "#00000000",
         drawerPosition: "left",
-        swipeEdgeWidth: 200,
+        swipeEdgeWidth: 100,
         headerStyle: {
           backgroundColor: "rgb(32,32,32)",
         },

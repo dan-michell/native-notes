@@ -1,8 +1,9 @@
-import { Divider, Box, Text, Fab, Icon, ScrollView, View } from "native-base";
+import { Divider, Box, Text, Fab, Icon, View } from "native-base";
 import React, { useState, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import Note from "../components/Note";
 import CreateNote from "../components/CreateNote";
+import NoteList from "../components/NoteList";
 import { Ionicons } from "@expo/vector-icons";
 import { Networking } from "../../networking";
 import { auth } from "../../firebase/firebase-config";
@@ -29,18 +30,9 @@ const Main = ({ navigation }: any) => {
     setNotes(notes);
   };
 
-  const createNote = async (note: string, createdAt: string): Promise<any> => {
-    const noteCreationResponseMessage = await networking.createNote(note, createdAt, userId);
-    console.log(noteCreationResponseMessage);
+  const createNote = async (note: string, createdAt: number): Promise<any> => {
+    await networking.createNote(note, createdAt, userId);
     getNotes();
-  };
-
-  const populateNotes = () => {
-    if (notes != null) {
-      return notes.map((note, i) => {
-        return <Note key={i} content={note.note} date={note.createdAt} />;
-      });
-    }
   };
 
   const handleOpenNoteCreation = (state: boolean): void => {
@@ -72,7 +64,7 @@ const Main = ({ navigation }: any) => {
           />
         </View>
         <Divider mt={2} bg={"gray.600"} shadow={8} w={"90%"} alignSelf={"center"} />
-        <ScrollView>{populateNotes()}</ScrollView>
+        <NoteList notes={notes} />
       </Box>
       <Fab
         onPress={() => setOpen(true)}
