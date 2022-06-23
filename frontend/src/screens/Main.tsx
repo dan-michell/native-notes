@@ -1,24 +1,22 @@
-import { Divider, Box, Text, Fab, Icon, ScrollView, View } from "native-base";
+import { Divider, Box, Text, Fab, Icon, View } from "native-base";
 import React, { useState, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import Note from "../components/Note";
 import CreateNote from "../components/CreateNote";
+import NoteList from "../components/NoteList";
 import { Ionicons } from "@expo/vector-icons";
 import { Networking } from "../../networking";
 import { auth } from "../../firebase/firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
-import { SwipeListView } from "react-native-swipe-list-view";
 
 const Main = ({ navigation }: any) => {
   const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState<any[]>([]);
   const [userId, setUserId] = useState("");
-  const [noteInfo, setNoteInfo] = useState<any>([]);
   const networking = new Networking();
 
   useEffect(() => {
     getNotes();
-    populateNotes();
   }, [userId]);
 
   onAuthStateChanged(auth, (user) => {
@@ -35,15 +33,6 @@ const Main = ({ navigation }: any) => {
   const createNote = async (note: string, createdAt: number): Promise<any> => {
     await networking.createNote(note, createdAt, userId);
     getNotes();
-  };
-
-  const populateNotes = () => {
-    if (notes != null) {
-      const noteData = notes.map((note, i) => {
-        return { key: i, content: note.note, date: note.createdAt };
-      });
-      setNoteInfo(noteData);
-    }
   };
 
   const handleOpenNoteCreation = (state: boolean): void => {
@@ -75,19 +64,7 @@ const Main = ({ navigation }: any) => {
           />
         </View>
         <Divider mt={2} bg={"gray.600"} shadow={8} w={"90%"} alignSelf={"center"} />
-        <SwipeListView
-          data={noteInfo}
-          disableRightSwipe={true}
-          renderItem={(data: any, rowMap) => <Note content={data.item.content} date={data.item.date} />}
-          renderHiddenItem={(data, rowMap) => (
-            <View>
-              <Text>Left</Text>
-              <Text>Right</Text>
-            </View>
-          )}
-          leftOpenValue={75}
-          rightOpenValue={-75}
-        />
+        <NoteList notes={notes} />
       </Box>
       <Fab
         onPress={() => setOpen(true)}
