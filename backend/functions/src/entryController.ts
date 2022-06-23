@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 import { Response } from "express";
 import { db } from "./config/firebase";
@@ -43,7 +44,11 @@ const getNotes = async (req: Request, res: Response) => {
   try {
     const notes: EntryType[] = [];
     // eslint-disable-next-line max-len
-    const querySnapshot = await db.collection("notes").where("userId", "==", `${userId}`).get();
+    const querySnapshot = await db
+      .collection("notes")
+      .where("userId", "==", `${userId}`)
+      .orderBy("createdAt", "desc")
+      .get();
     querySnapshot.forEach((doc: any) => notes.push(doc.data()));
     res.status(200).json(notes);
   } catch (error) {
