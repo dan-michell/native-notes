@@ -10,6 +10,7 @@ type Props = {
 };
 
 const NoteList = ({ notes }: Props) => {
+  // Bug occurs because height of swipe element does not update to new height of note, therefore appearing below the single line note that moves into the area.
   const [noteInfo, setNoteInfo] = useState<any>([]);
 
   useEffect(() => {
@@ -78,6 +79,7 @@ const NoteList = ({ notes }: Props) => {
     <View
       flex={1}
       w={"84%"}
+      maxHeight={69}
       alignSelf={"flex-end"}
       mt={3}
       mr={"6%"}
