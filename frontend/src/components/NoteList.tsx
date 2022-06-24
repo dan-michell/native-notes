@@ -87,7 +87,7 @@ const NoteList = ({ notes, getNotes }: Props) => {
     <View
       flex={1}
       w={"84%"}
-      maxHeight={69}
+      maxHeight={"100%"}
       alignSelf={"flex-end"}
       mt={3}
       mr={"6%"}
@@ -140,6 +140,7 @@ const NoteList = ({ notes, getNotes }: Props) => {
           disableRightSwipe={true}
           renderItem={renderItem}
           renderHiddenItem={renderHiddenItem}
+          recalculateHiddenLayout={true}
           rightOpenValue={-155}
           stopRightSwipe={-200}
         />
