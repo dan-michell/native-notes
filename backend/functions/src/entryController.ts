@@ -69,17 +69,15 @@ const updateNote = async (req: Request, res: Response) => {
       id: currentData.id,
       note: note || currentData.note,
       userId: currentData.userId,
-      createdAt: currentData.createdAt,
+      createdAt: new Date().getTime(),
     };
 
-    try {
-      await noteEntry.set(noteObject);
-    } catch (error) {
+    await noteEntry.set(noteObject).catch((error) => {
       return res.status(400).json({
         status: "error",
         message: error.message,
       });
-    }
+    });
 
     return res.status(200).json({
       status: "success",

@@ -5,6 +5,7 @@ import React, { useState, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Networking } from "../../networking";
+import UpdateNote from "../components/UpdateNote";
 
 type Props = {
   notes: any[];
@@ -13,6 +14,9 @@ type Props = {
 
 const NoteList = ({ notes, getNotes }: Props) => {
   const [noteInfo, setNoteInfo] = useState<any>([]);
+  const [currentNoteId, setCurrentNoteId] = useState("");
+  const [currentNoteContent, setCurrentNoteContent] = useState("");
+  const [open, setOpen] = useState(false);
   const networking = new Networking();
 
   useEffect(() => {
@@ -31,6 +35,15 @@ const NoteList = ({ notes, getNotes }: Props) => {
   const deleteNote = async (noteId: string) => {
     await networking.deleteNote(noteId);
     getNotes();
+  };
+
+  const updateNote = async (updatedNoteContent: string) => {
+    await networking.updateNote(currentNoteId, updatedNoteContent);
+    getNotes();
+  };
+
+  const handleOpenNoteUpdate = (state: boolean): void => {
+    setOpen(state);
   };
 
   const convertDateToReadableString = (date: number): string => {
@@ -87,7 +100,19 @@ const NoteList = ({ notes, getNotes }: Props) => {
       <Pressable w={50} h={"100%"} bg={"gray.900"} alignItems={"center"} justifyContent={"center"}>
         <Icon color="gray.300" as={AntDesign} name="staro" size="lg" />
       </Pressable>
-      <Pressable w={50} h={"100%"} bg={"gray.900"} alignItems={"center"} justifyContent={"center"}>
+      <Pressable
+        w={50}
+        h={"100%"}
+        bg={"gray.900"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        onPress={() => {
+          setCurrentNoteId(data.item.id);
+          setCurrentNoteContent(data.item.content);
+          setOpen(true);
+          closeRow(rowMap, data.item.key);
+        }}
+      >
         <Icon color="gray.300" as={AntDesign} name="edit" size="lg" />
       </Pressable>
       <Pressable
@@ -108,57 +133,25 @@ const NoteList = ({ notes, getNotes }: Props) => {
   );
 
   return (
-    <View flex={1}>
-      <SwipeListView
-        data={noteInfo}
-        disableRightSwipe={true}
-        renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        rightOpenValue={-155}
-        stopRightSwipe={-200}
+    <>
+      <View flex={1}>
+        <SwipeListView
+          data={noteInfo}
+          disableRightSwipe={true}
+          renderItem={renderItem}
+          renderHiddenItem={renderHiddenItem}
+          rightOpenValue={-155}
+          stopRightSwipe={-200}
+        />
+      </View>
+      <UpdateNote
+        open={open}
+        handleOpenNoteUpdate={handleOpenNoteUpdate}
+        updateNote={updateNote}
+        currentNoteContent={currentNoteContent}
       />
-    </View>
+    </>
   );
 };
 
 export default NoteList;
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: "white",
-    flex: 1,
-  },
-  backTextWhite: {
-    color: "#FFF",
-  },
-  rowFront: {
-    alignItems: "center",
-    backgroundColor: "#CCC",
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
-    justifyContent: "center",
-    height: 40,
-  },
-  rowBack: {
-    alignItems: "center",
-    backgroundColor: "#DDD",
-    flex: 1,
-  },
-  backRightBtn: {
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
-    borderWidth: 2,
-    position: "absolute",
-    height: "100%",
-    width: 75,
-  },
-  backRightBtnLeft: {
-    backgroundColor: "blue",
-    right: 75,
-  },
-  backRightBtnRight: {
-    backgroundColor: "red",
-    right: 0,
-  },
-});

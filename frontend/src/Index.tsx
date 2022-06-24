@@ -36,8 +36,11 @@ const Index = () => {
         overlayColor: "#00000000",
         drawerPosition: "left",
         swipeEdgeWidth: 100,
+        headerShadowVisible: false,
         headerStyle: {
-          backgroundColor: "rgb(32,32,32)",
+          backgroundColor: "#27272a",
+          borderBottomWidth: 1,
+          borderBottomColor: "white",
         },
       }}
     >

@@ -35,7 +35,6 @@ export class Networking {
   }
 
   async deleteNote(noteId: string) {
-    console.log("ran");
     try {
       const response = await fetch(
         `https://us-central1-minimal-notes-10eed.cloudfunctions.net/app/api/notes/${noteId}`,
@@ -45,6 +44,30 @@ export class Networking {
             "Content-Type": "application/json",
           },
           method: "DELETE",
+        }
+      );
+      const responseMessage = await response.json();
+      console.log(responseMessage);
+      if (response.status >= 400) throw new Error(responseMessage);
+      return responseMessage;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async updateNote(noteId: string, updatedNoteContent: string) {
+    console.log(noteId, updatedNoteContent);
+    const noteData = { note: updatedNoteContent };
+    try {
+      const response = await fetch(
+        `https://us-central1-minimal-notes-10eed.cloudfunctions.net/app/api/notes/${noteId}`,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          method: "PATCH",
+          body: JSON.stringify(noteData),
         }
       );
       const responseMessage = await response.json();
