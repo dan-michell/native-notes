@@ -1,5 +1,5 @@
 import { SwipeListView } from "react-native-swipe-list-view";
-import { TouchableOpacity, StyleSheet } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import { View, Box, Text, Checkbox, Pressable, Icon } from "native-base";
 import React, { useState, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
