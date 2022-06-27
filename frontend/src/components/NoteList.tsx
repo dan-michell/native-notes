@@ -26,7 +26,7 @@ const NoteList = ({ notes, getNotes }: Props) => {
   const populateNotes = () => {
     if (notes != null) {
       const noteData = notes.map((note, i) => {
-        return { key: i, content: note.note, date: note.createdAt, id: note.id };
+        return { key: i, content: note.note, date: note.createdAt, id: note.id, favorite: note.favorite };
       });
       setNoteInfo(noteData);
     }
@@ -44,6 +44,11 @@ const NoteList = ({ notes, getNotes }: Props) => {
 
   const handleOpenNoteUpdate = (state: boolean): void => {
     setOpen(state);
+  };
+
+  const handleFavoriteUpdate = async (noteId: string, favorite: boolean) => {
+    await networking.updateFavorite(noteId, favorite);
+    getNotes();
   };
 
   const convertDateToReadableString = (date: number): string => {
@@ -97,8 +102,17 @@ const NoteList = ({ notes, getNotes }: Props) => {
       bg={"gray.900"}
       roundedRight={"2xl"}
     >
-      <Pressable w={50} h={"100%"} bg={"gray.900"} alignItems={"center"} justifyContent={"center"}>
-        <Icon color="gray.300" as={AntDesign} name="staro" size="lg" />
+      <Pressable
+        w={50}
+        h={"100%"}
+        bg={"gray.900"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        onPress={() => {
+          handleFavoriteUpdate(data.item.id, !data.item.favorite);
+        }}
+      >
+        <Icon color={data.item.favorite ? "amber.500" : "gray.300"} as={AntDesign} name="star" size="lg" />
       </Pressable>
       <Pressable
         w={50}

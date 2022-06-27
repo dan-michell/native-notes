@@ -1,3 +1,5 @@
+/* eslint-disable operator-linebreak */
+/* eslint-disable max-len */
 /* eslint-disable indent */
 /* eslint-disable object-curly-spacing */
 import { Response } from "express";
@@ -12,6 +14,7 @@ type EntryType = {
 type Request = {
   body: EntryType;
   params: { noteId: string; userId: string };
+  query: { sort: string; favorite: string };
 };
 
 const addNote = async (req: Request, res: Response) => {
@@ -23,6 +26,7 @@ const addNote = async (req: Request, res: Response) => {
       id: noteEntry.id,
       note,
       userId,
+      favorite: false,
       createdAt,
     };
 
@@ -40,15 +44,18 @@ const addNote = async (req: Request, res: Response) => {
 
 const getNotes = async (req: Request, res: Response) => {
   const { userId } = req.params;
+  const { sort } = req.query;
+
+  const sortArray = sort.split(" ");
+  const sortBy: string = sortArray[0];
+  const sortDirection: string = sortArray[1];
 
   try {
     const notes: EntryType[] = [];
-    // eslint-disable-next-line max-len
-    const querySnapshot = await db
-      .collection("notes")
-      .where("userId", "==", `${userId}`)
-      .orderBy("createdAt", "desc")
-      .get();
+    const querySnapshot =
+      sortDirection === "asc"
+        ? await db.collection("notes").where("userId", "==", `${userId}`).orderBy(sortBy, "asc").get()
+        : await db.collection("notes").where("userId", "==", `${userId}`).orderBy(sortBy, "desc").get();
     querySnapshot.forEach((doc: any) => notes.push(doc.data()));
     res.status(200).json(notes);
   } catch (error) {
@@ -69,7 +76,40 @@ const updateNote = async (req: Request, res: Response) => {
       id: currentData.id,
       note: note || currentData.note,
       userId: currentData.userId,
+      favorite: currentData.favorite,
       createdAt: new Date().getTime(),
+    };
+
+    await noteEntry.set(noteObject).catch((error) => {
+      return res.status(400).json({
+        status: "error",
+        message: error.message,
+      });
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "entry updated successfully",
+      data: noteObject,
+    });
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+};
+
+const updateFavorite = async (req: Request, res: Response) => {
+  const { noteId } = req.params;
+  const { favorite } = req.query;
+
+  try {
+    const noteEntry = db.collection("notes").doc(noteId);
+    const currentData = (await noteEntry.get()).data() || {};
+    const noteObject = {
+      id: currentData.id,
+      note: currentData.note,
+      userId: currentData.userId,
+      favorite: favorite === "true" ? true : false,
+      createdAt: currentData.createdAt,
     };
 
     await noteEntry.set(noteObject).catch((error) => {
@@ -112,4 +152,4 @@ const deleteNote = async (req: Request, res: Response) => {
   }
 };
 
-export { addNote, getNotes, updateNote, deleteNote };
+export { addNote, getNotes, updateNote, updateFavorite, deleteNote };

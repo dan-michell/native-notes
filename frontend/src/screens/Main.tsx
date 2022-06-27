@@ -1,23 +1,24 @@
 import { Divider, Box, Text, Fab, Icon, View } from "native-base";
 import React, { useState, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
-import Note from "../components/Note";
 import CreateNote from "../components/CreateNote";
 import NoteList from "../components/NoteList";
 import { Ionicons } from "@expo/vector-icons";
 import { Networking } from "../../networking";
 import { auth } from "../../firebase/firebase-config";
 import { onAuthStateChanged } from "firebase/auth";
+import SortDropdown from "../components/SortDropdown";
 
 const Main = ({ navigation }: any) => {
   const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState<any[]>([]);
   const [userId, setUserId] = useState("");
+  const [sort, setSort] = useState("createdAt desc");
   const networking = new Networking();
 
   useEffect(() => {
     getNotes();
-  }, [userId]);
+  }, [userId, sort]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -26,7 +27,7 @@ const Main = ({ navigation }: any) => {
   });
 
   const getNotes = async (): Promise<any> => {
-    const notes = await networking.getNotes(userId);
+    const notes = await networking.getNotes(userId, sort);
     setNotes(notes);
   };
 
@@ -37,6 +38,10 @@ const Main = ({ navigation }: any) => {
 
   const handleOpenNoteCreation = (state: boolean): void => {
     setOpen(state);
+  };
+
+  const handleSort = (sort: string): void => {
+    setSort(sort);
   };
 
   return (
@@ -63,7 +68,8 @@ const Main = ({ navigation }: any) => {
             }}
           />
         </View>
-        <Divider mt={2} bg={"gray.600"} shadow={8} w={"90%"} alignSelf={"center"} />
+        <Divider bg={"gray.600"} shadow={8} w={"90%"} alignSelf={"center"} />
+        <SortDropdown handleSort={handleSort} sort={sort} />
         <NoteList notes={notes} getNotes={getNotes} />
       </Box>
       <Fab

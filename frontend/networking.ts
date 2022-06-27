@@ -1,8 +1,8 @@
 export class Networking {
-  async getNotes(userId: string) {
+  async getNotes(userId: string, sort: string) {
     try {
       const response = await fetch(
-        `https://us-central1-minimal-notes-10eed.cloudfunctions.net/app/api/notes/${userId}`
+        `https://us-central1-minimal-notes-10eed.cloudfunctions.net/app/api/notes/${userId}?sort=${sort}`
       );
       const notesData = await response.json();
       if (response.status >= 400) throw new Error(notesData);
@@ -56,7 +56,6 @@ export class Networking {
   }
 
   async updateNote(noteId: string, updatedNoteContent: string) {
-    console.log(noteId, updatedNoteContent);
     const noteData = { note: updatedNoteContent };
     try {
       const response = await fetch(
@@ -72,6 +71,27 @@ export class Networking {
       );
       const responseMessage = await response.json();
       console.log(responseMessage);
+      if (response.status >= 400) throw new Error(responseMessage);
+      return responseMessage;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async updateFavorite(noteId: string, favorite: boolean) {
+    console.log(favorite);
+    try {
+      const response = await fetch(
+        `https://us-central1-minimal-notes-10eed.cloudfunctions.net/app/api/notes/favorite/${noteId}?favorite=${favorite}`,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          method: "PATCH",
+        }
+      );
+      const responseMessage = await response.json();
       if (response.status >= 400) throw new Error(responseMessage);
       return responseMessage;
     } catch (error) {
