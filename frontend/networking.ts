@@ -1,8 +1,8 @@
 export class Networking {
-  async getNotes(userId: string, sort: string) {
+  async getNotes(userId: string, sort: string, favorites: boolean) {
     try {
       const response = await fetch(
-        `https://us-central1-minimal-notes-10eed.cloudfunctions.net/app/api/notes/${userId}?sort=${sort}`
+        `https://us-central1-minimal-notes-10eed.cloudfunctions.net/app/api/notes/${userId}?sort=${sort}&favorites=${favorites}`
       );
       const notesData = await response.json();
       if (response.status >= 400) throw new Error(notesData);
@@ -47,7 +47,6 @@ export class Networking {
         }
       );
       const responseMessage = await response.json();
-      console.log(responseMessage);
       if (response.status >= 400) throw new Error(responseMessage);
       return responseMessage;
     } catch (error) {
@@ -70,7 +69,6 @@ export class Networking {
         }
       );
       const responseMessage = await response.json();
-      console.log(responseMessage);
       if (response.status >= 400) throw new Error(responseMessage);
       return responseMessage;
     } catch (error) {
@@ -79,7 +77,6 @@ export class Networking {
   }
 
   async updateFavorite(noteId: string, favorite: boolean) {
-    console.log(favorite);
     try {
       const response = await fetch(
         `https://us-central1-minimal-notes-10eed.cloudfunctions.net/app/api/notes/favorite/${noteId}?favorite=${favorite}`,

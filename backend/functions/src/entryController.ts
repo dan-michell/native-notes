@@ -14,7 +14,7 @@ type EntryType = {
 type Request = {
   body: EntryType;
   params: { noteId: string; userId: string };
-  query: { sort: string; favorite: string };
+  query: { sort: string; favorite: string; favorites: string };
 };
 
 const addNote = async (req: Request, res: Response) => {
@@ -44,7 +44,7 @@ const addNote = async (req: Request, res: Response) => {
 
 const getNotes = async (req: Request, res: Response) => {
   const { userId } = req.params;
-  const { sort } = req.query;
+  const { sort, favorites } = req.query;
 
   const sortArray = sort.split(" ");
   const sortBy: string = sortArray[0];
@@ -52,10 +52,10 @@ const getNotes = async (req: Request, res: Response) => {
 
   try {
     const notes: EntryType[] = [];
-    const querySnapshot =
-      sortDirection === "asc"
-        ? await db.collection("notes").where("userId", "==", `${userId}`).orderBy(sortBy, "asc").get()
-        : await db.collection("notes").where("userId", "==", `${userId}`).orderBy(sortBy, "desc").get();
+    let query = db.collection("notes").where("userId", "==", `${userId}`);
+    query = sortDirection === "asc" ? query.orderBy(sortBy, "asc") : query.orderBy(sortBy, "desc");
+    query = favorites === "true" ? query.where("favorite", "==", true) : query;
+    const querySnapshot = await query.get();
     querySnapshot.forEach((doc: any) => notes.push(doc.data()));
     res.status(200).json(notes);
   } catch (error) {

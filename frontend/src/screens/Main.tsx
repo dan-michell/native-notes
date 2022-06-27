@@ -14,11 +14,12 @@ const Main = ({ navigation }: any) => {
   const [notes, setNotes] = useState<any[]>([]);
   const [userId, setUserId] = useState("");
   const [sort, setSort] = useState("createdAt desc");
+  const [favorites, setFavorites] = useState<boolean>(false);
   const networking = new Networking();
 
   useEffect(() => {
     getNotes();
-  }, [userId, sort]);
+  }, [userId, sort, favorites]);
 
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -27,7 +28,7 @@ const Main = ({ navigation }: any) => {
   });
 
   const getNotes = async (): Promise<any> => {
-    const notes = await networking.getNotes(userId, sort);
+    const notes = await networking.getNotes(userId, sort, favorites);
     setNotes(notes);
   };
 
@@ -69,7 +70,17 @@ const Main = ({ navigation }: any) => {
           />
         </View>
         <Divider bg={"gray.600"} shadow={8} w={"90%"} alignSelf={"center"} />
-        <SortDropdown handleSort={handleSort} sort={sort} />
+        <Box py={3} alignSelf={"center"} flexDirection={"row"} alignItems={"center"} w={"90%"}>
+          <SortDropdown handleSort={handleSort} sort={sort} />
+          <Icon
+            color={favorites ? "amber.500" : "gray.300"}
+            as={AntDesign}
+            name={favorites ? "star" : "staro"}
+            size="xl"
+            ml={5}
+            onPress={() => setFavorites(!favorites)}
+          />
+        </Box>
         <NoteList notes={notes} getNotes={getNotes} />
       </Box>
       <Fab

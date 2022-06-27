@@ -6,6 +6,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Networking } from "../../networking";
 import UpdateNote from "../components/UpdateNote";
+import SortDropdown from "./SortDropdown";
 
 type Props = {
   notes: any[];
@@ -67,7 +68,7 @@ const NoteList = ({ notes, getNotes }: Props) => {
     <Box
       bg={"gray.700"}
       w={"90%"}
-      mt={3}
+      mb={3}
       rounded={"2xl"}
       flexDirection={"row"}
       alignItems={"center"}
@@ -94,7 +95,7 @@ const NoteList = ({ notes, getNotes }: Props) => {
       w={"84%"}
       maxHeight={"100%"}
       alignSelf={"flex-end"}
-      mt={3}
+      mb={3}
       mr={"6%"}
       justifyContent={"flex-end"}
       alignItems={"center"}
@@ -112,7 +113,12 @@ const NoteList = ({ notes, getNotes }: Props) => {
           handleFavoriteUpdate(data.item.id, !data.item.favorite);
         }}
       >
-        <Icon color={data.item.favorite ? "amber.500" : "gray.300"} as={AntDesign} name="star" size="lg" />
+        <Icon
+          color={data.item.favorite ? "amber.500" : "gray.300"}
+          as={AntDesign}
+          name={data.item.favorite ? "star" : "staro"}
+          size="lg"
+        />
       </Pressable>
       <Pressable
         w={50}

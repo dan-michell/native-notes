@@ -8,10 +8,10 @@ type Props = {
 
 const SortDropdown = ({ handleSort, sort }: Props) => {
   return (
-    <Box w="90%" mt={3} alignSelf={"center"}>
+    <Box width={"55%"}>
       <Select
         selectedValue={sort}
-        w={"50%"}
+        w={"100%"}
         accessibilityLabel="Sort by"
         placeholder="Sort by"
         _selectedItem={{
@@ -28,7 +28,6 @@ const SortDropdown = ({ handleSort, sort }: Props) => {
           handleSort(itemValue);
         }}
       >
-        <Select.Item label="Favorites" value="favorites" />
         <Select.Item label="Created: Ascending" value="createdAt asc" />
         <Select.Item label="Created: Descending" value="createdAt desc" />
       </Select>
