@@ -6,7 +6,7 @@ type Props = {
   handleSort: (sort: string) => void;
 };
 
-const SortDropdown = ({ handleSort, sort }: Props) => {
+const SortDropdown: React.FC<Props> = ({ handleSort, sort }: Props) => {
   return (
     <Box width={"55%"}>
       <Select
